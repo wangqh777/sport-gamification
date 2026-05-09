@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>燃动Fit - 游戏化运动激励工具</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --primary: #6C5CE7;
+    --secondary: #00C9A7;
+    --accent: #FF6B6B;
+    --bg: #0A0A1A;
+    --card: #141428;
+    --text: #E8E8F0;
+    --text-dim: #9090A8;
+    --gradient-main: linear-gradient(135deg, #6C5CE7 0%, #00C9A7 50%, #FFD93D 100%);
+    --gradient-hero: linear-gradient(135deg, #0A0A1A 0%, #1A1040 40%, #0A2A20 70%, #0A0A1A 100%);
+    --gradient-card: linear-gradient(145deg, #1A1A38 0%, #141428 100%);
+    --shadow-glow: 0 0 40px rgba(108, 92, 231, 0.3);
+  }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,26,0.85);
+    border-bottom: 1px solid rgba(108,92,231,0.15);
+  }
+  .nav-logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--secondary); }
+
+  /* ===== SECTION BASE ===== */
+  section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+
+  .section-title {
+    font-size: 2.4rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    margin-bottom: 60px;
+  }
+  .gradient-text {
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--gradient-hero);
+    position: relative;
+    overflow: hidden;
+    padding: 120px 40px 80px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(108,92,231,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: heroPulse 4s ease-in-out infinite;
+  }
+  @keyframes heroPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.4; }
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 20px;
+    background: rgba(108,92,231,0.2);
+    border: 1px solid rgba(108,92,231,0.3);
+    color: var(--secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease;
+  }
+  .hero h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    position: relative;
+    animation: fadeInUp 0.6s ease 0.1s both;
+  }
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    animation: fadeInUp 0.6s ease 0.2s both;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    animation: fadeInUp 0.6s ease 0.3s both;
+  }
+  .btn-primary {
+    padding: 14px 36px;
+    border-radius: 30px;
+    background: var(--gradient-main);
+    color: #0A0A1A;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+  .btn-outline {
+    padding: 14px 36px;
+    border-radius: 30px;
+    background: transparent;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--secondary); color: var(--secondary); }
+
+  .hero-stats {
+    display: flex;
+    gap: 60px;
+    margin-top: 60px;
+    animation: fadeInUp 0.6s ease 0.4s both;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-stat .label { color: var(--text-dim); font-size: 0.9rem; margin-top: 4px; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== PAIN POINTS ===== */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .pain-card {
+    background: var(--gradient-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 32px;
+    transition: all 0.3s;
+  }
+  .pain-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .pain-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  .pain-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--accent);
+  }
+  .pain-card p {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  /* ===== SOLUTION MODULES ===== */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .module-card {
+    background: var(--gradient-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 36px 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .module-card:nth-child(1)::before { background: #6C5CE7; }
+  .module-card:nth-child(2)::before { background: #00C9A7; }
+  .module-card:nth-child(3)::before { background: #FF6B6B; }
+  .module-card:nth-child(4)::before { background: #FFD93D; }
+
+  .module-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .module-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  .module-card:nth-child(1) .module-icon { background: rgba(108,92,231,0.2); }
+  .module-card:nth-child(2) .module-icon { background: rgba(0,201,167,0.2); }
+  .module-card:nth-child(3) .module-icon { background: rgba(255,107,107,0.2); }
+  .module-card:nth-child(4) .module-icon { background: rgba(255,217,61,0.2); }
+
+  .module-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+  .module-card .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .module-card:nth-child(1) .tag { background: rgba(108,92,231,0.2); color: #A78BFA; }
+  .module-card:nth-child(2) .tag { background: rgba(0,201,167,0.2); color: #5EEAD4; }
+  .module-card:nth-child(3) .tag { background: rgba(255,107,107,0.2); color: #FDA4A4; }
+  .module-card:nth-child(4) .tag { background: rgba(255,217,61,0.2); color: #FDE68A; }
+
+  .module-card ul {
+    list-style: none;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 2;
+  }
+  .module-card ul li::before {
+    content: '→ ';
+    color: var(--secondary);
+    font-weight: 700;
+  }
+
+  /* ===== FEATURE SHOWCASE ===== */
+  .feature-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .feature-block:last-child { margin-bottom: 0; }
+  .feature-block.reverse { direction: rtl; }
+  .feature-block.reverse .feature-text { direction: ltr; }
+  .feature-text h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .feature-text p {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+  .feature-text .feature-list {
+    list-style: none;
+    line-height: 2.2;
+    color: var(--text-dim);
+  }
+  .feature-text .feature-list li::before {
+    content: '✓ ';
+    color: var(--secondary);
+    font-weight: 700;
+  }
+  .feature-visual {
+    background: var(--gradient-card);
+    border-radius: 24px;
+    padding: 32px;
+    border: 1px solid rgba(255,255,255,0.06);
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-visual::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+  }
+  .mock-phone {
+    width: 220px;
+    height: 380px;
+    background: #1E1E3A;
+    border-radius: 28px;
+    border: 3px solid rgba(255,255,255,0.1);
+    padding: 12px;
+    position: relative;
+  }
+  .mock-phone .notch {
+    width: 60px; height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    margin: 0 auto 12px;
+  }
+  .mock-screen {
+    background: #111;
+    border-radius: 16px;
+    height: calc(100% - 18px);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--primary);
+    width: 100%;
+  }
+  .mock-bar.short { width: 65%; }
+  .mock-row {
+    display: flex;
+    gap: 8px;
+  }
+  .mock-box {
+    flex: 1;
+    height: 60px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 100%);
+    opacity: 0.8;
+  }
+  .mock-box:nth-child(2) { background: linear-gradient(135deg, var(--secondary) 0%, #5EEAD4 100%); }
+  .mock-box:nth-child(3) { background: linear-gradient(135deg, var(--accent) 0%, #FF9A9A 100%); }
+  .mock-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) 0% 70%, rgba(255,255,255,0.1) 70% 100%);
+    margin: 8px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  .mock-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD93D, #FF6B6B);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .mock-leaderboard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    font-size: 0.7rem;
+  }
+  .mock-leaderboard .rank {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rank-1 { background: #FFD700; color: #000; }
+  .rank-2 { background: #C0C0C0; color: #000; }
+  .rank-3 { background: #CD7F32; color: #fff; }
+
+  /* ===== USER JOURNEY ===== */
+  .journey-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 40px;
+  }
+  .journey-steps::before {
+    content: '';
+    position: absolute;
+    top: 44px; left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), #FFD93D);
+  }
+  .journey-step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+  .journey-step .step-num {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: var(--gradient-card);
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 16px;
+    font-weight: 900;
+  }
+  .journey-step:nth-child(1) .step-num { color: var(--primary); }
+  .journey-step:nth-child(2) .step-num { color: var(--secondary); }
+  .journey-step:nth-child(3) .step-num { color: var(--accent); }
+  .journey-step:nth-child(4) .step-num { color: #FFD93D; }
+  .journey-step h4 { font-size: 1rem; margin-bottom: 6px; }
+  .journey-step p { color: var(--text-dim); font-size: 0.85rem; max-width: 200px; margin: 0 auto; }
+
+  /* ===== ARCHITECTURE ===== */
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+  .arch-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .arch-node {
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    text-align: center;
+    min-width: 120px;
+  }
+  .arch-node.layer-1 { background: linear-gradient(135deg, #6C5CE7, #8B7CF7); }
+  .arch-node.layer-2 { background: linear-gradient(135deg, #00C9A7, #34D399); }
+  .arch-node.layer-3 { background: linear-gradient(135deg, #FF6B6B, #F87171); }
+  .arch-node.layer-4 { background: linear-gradient(135deg, #1E1E3A, #2D2D5A); border: 1px solid rgba(255,255,255,0.1); }
+  .arch-bridge {
+    width: 2px; height: 24px;
+    background: rgba(255,255,255,0.2);
+  }
+  .arch-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  /* ===== METRICS ===== */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .metric-card {
+    background: var(--gradient-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .metric-card:hover { transform: translateY(-4px); }
+  .metric-num {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .metric-label { color: var(--text-dim); font-size: 0.9rem; margin-top: 6px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 60px 40px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    section { padding: 60px 24px; }
+    .hero h1 { font-size: 2.6rem; }
+    .feature-block { grid-template-columns: 1fr; gap: 40px; }
+    .feature-block.reverse { direction: ltr; }
+    .hero-stats { gap: 30px; }
+    .journey-steps { flex-direction: column; gap: 24px; }
+    .journey-steps::before { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+  <div class="nav-logo">燃动Fit</div>
+  <ul class="nav-links">
+    <li><a href="#pain">用户痛点</a></li>
+    <li><a href="#solution">核心功能</a></li>
+    <li><a href="#journey">用户旅程</a></li>
+    <li><a href="#arch">产品架构</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-badge">🎯 游戏化运动激励平台</div>
+  <h1>
+    <span class="gradient-text">让运动</span><br>成为一场冒险
+  </h1>
+  <p>
+    燃动Fit通过RPG角色养成、组队副本挑战、赛季排位竞技三大游戏化机制，
+    让每一次运动都像闯关打怪一样上瘾，彻底告别「三分钟热度」。
+  </p>
+  <div class="hero-cta">
+    <a href="#solution" class="btn-primary">探索产品设计</a>
+    <a href="#arch" class="btn-outline">查看系统架构</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">78%</div>
+      <div class="label">运动频率提升</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">4.5x</div>
+      <div class="label">用户留存倍数</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">92%</div>
+      <div class="label">用户满意度</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAIN POINTS ===== -->
+<section id="pain">
+  <h2 class="section-title">深入理解<span class="gradient-text">用户痛点</span></h2>
+  <p class="section-subtitle">基于大学生群体深度访谈与行为数据分析，我们锁定了四大核心痛点</p>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">😴</div>
+      <h3>缺乏持续动力</h3>
+      <p>83%的大学生表示知道运动很重要，但缺乏坚持的动机。传统健身App只记录数据，没有提供持续的情感激励和正反馈循环。</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">👻</div>
+      <h3>独自运动太无聊</h3>
+      <p>缺乏同伴监督和社交互动，跑步机上度秒如年。76%的受访者认为「有人一起」是坚持运动的最关键因素。</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📉</div>
+      <h3>看不到成长轨迹</h3>
+      <p>运动效果反馈周期太长，看不到即时成果导致中途放弃。需要将宏观目标拆解为可感知的阶段性里程碑。</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">💰</div>
+      <h3>时间与成本门槛</h3>
+      <p>学业压力大、健身房费用高、通勤时间长。运动需要更灵活、更低门槛的方式融入校园日常生活场景。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CORE MODULES ===== -->
+<section id="solution">
+  <h2 class="section-title">四大<span class="gradient-text">核心系统</span></h2>
+  <p class="section-subtitle">以游戏化设计理论（Octalysis & Self-Determination Theory）为框架，构建完整激励闭环</p>
+  <div class="modules">
+    <div class="module-card">
+      <div class="module-icon">🎮</div>
+      <h3>角色养成系统</h3>
+      <span class="tag">核心驱动力：意义与成就感</span>
+      <ul>
+        <li>创建个性化虚拟角色，运动数据转化为经验值与属性</li>
+        <li>六大属性维度：力量/耐力/敏捷/柔韧/爆发/精神</li>
+        <li>角色外观随等级进化，解锁专属装备与皮肤</li>
+        <li>运动即打怪：跑步=冒险闯关，撸铁=BOSS战</li>
+        <li>宠物系统：步数孵化精灵，养成伙伴陪伴运动</li>
+      </ul>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">⚔️</div>
+      <h3>任务与副本系统</h3>
+      <span class="tag">核心驱动力：目标与即时反馈</span>
+      <ul>
+        <li>每日任务：随机生成，难度自适应，完成获得金币与经验</li>
+        <li>主线副本：7天/21天/90天阶段性挑战，打BOSS解锁剧情</li>
+        <li>世界事件：限时活动挑战，全服玩家共同推进进度条</li>
+        <li>隐藏成就：探索型成就鼓励多样化运动尝试</li>
+        <li>连击奖励：连续打卡递增奖励，中断则连击归零</li>
+      </ul>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">👥</div>
+      <h3>社交竞技系统</h3>
+      <span class="tag">核心驱动力：社交影响与竞争</span>
+      <ul>
+        <li>好友实时PK：同类型运动即时对战，比拼卡路里/配速</li>
+        <li>组队副本：3-5人组队挑战团队运动目标</li>
+        <li>赛季排位：月度段位赛（青铜→王者），晋级获得限定奖励</li>
+        <li>校园势力战：以学院/社团为单位争夺校园领地</li>
+        <li>动态广场：分享运动高光时刻，点赞互动获得额外激励</li>
+      </ul>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🏆</div>
+      <h3>成就与荣誉系统</h3>
+      <span class="tag">核心驱动力：拥有感与稀缺性</span>
+      <ul>
+        <li>五级勋章体系：青铜→白银→黄金→钻石→传说</li>
+        <li>里程碑成就墙：首次5km/首个马拉松/累计1000分钟等</li>
+        <li>赛季限定称号：每个赛季推出限定可收集的专属称号</li>
+        <li>天赋树系统：消耗成就点解锁特殊能力与加成</li>
+        <li>实物兑换：积分兑换运动装备、校园周边等实体奖励</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURE DETAILS ===== -->
+<section>
+  <h2 class="section-title">核心功能<span class="gradient-text">深度展示</span></h2>
+  <p class="section-subtitle">三个最具差异化的产品功能详解</p>
+
+  <!-- Feature 1: RPG Battle -->
+  <div class="feature-block">
+    <div class="feature-text">
+      <h3>⚔️ 运动即战斗：把每次跑步变成RPG冒险</h3>
+      <p>用户跑步时，地图上会随机刷新「怪物」和「宝箱」。击败怪物获得经验与装备，开启宝箱获得随机奖励。配速越快伤害越高，距离越长经验越多。</p>
+      <ul class="feature-list">
+        <li>AR实景叠加：摄像头取景叠加虚拟怪物，沉浸式体验</li>
+        <li>Boss副本：每周解锁一个Boss，需要团队合力击败</li>
+        <li>装备掉落：稀有装备附带运动加成Buff</li>
+        <li>剧情模式：跑步解锁世界观故事线章节</li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="mock-phone">
+        <div class="notch"></div>
+        <div class="mock-screen">
+          <div style="font-size:0.6rem;color:#aaa;text-align:center;">📍 冒险模式 · 翡翠森林</div>
+          <div class="mock-bar" style="background:var(--accent);"></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#ccc;">
+            <span>👾 骷髅兵 Lv.8</span><span>⚡HP ▰▰▰▰▱</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <div style="flex:1;background:rgba(255,107,107,0.2);border-radius:8px;padding:6px;text-align:center;font-size:0.6rem;color:#FF6B6B;">⚔️ 攻击<br><b>256</b></div>
+            <div style="flex:1;background:rgba(0,201,167,0.2);border-radius:8px;padding:6px;text-align:center;font-size:0.6rem;color:#00C9A7;">🛡️ 防御<br><b>42</b></div>
+            <div style="flex:1;background:rgba(108,92,231,0.2);border-radius:8px;padding:6px;text-align:center;font-size:0.6rem;color:#8B7CF7;">✨ 经验<br><b>+128</b></div>
+          </div>
+          <div style="font-size:0.55rem;color:#666;text-align:center;margin-top:4px;">🏃 继续跑步以攻击 → 剩余 1.2km</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 2: Team Raid -->
+  <div class="feature-block reverse">
+    <div class="feature-visual">
+      <div class="mock-phone">
+        <div class="notch"></div>
+        <div class="mock-screen">
+          <div style="font-size:0.6rem;color:#FFD93D;text-align:center;">👥 组队副本 · 巨龙巢穴</div>
+          <div style="font-size:0.55rem;color:#aaa;text-align:center;">目标：团队累计消耗 3000 kcal</div>
+          <div class="mock-bar" style="background:var(--secondary);width:68%;"></div>
+          <div style="font-size:0.55rem;color:#ccc;text-align:right;">2040 / 3000</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="mock-leaderboard">
+              <div class="mock-avatar" style="width:22px;height:22px;font-size:0.6rem;">😎</div>
+              <span style="flex:1;font-size:0.6rem;color:#fff;">你的队伍</span>
+              <span style="font-size:0.55rem;color:#FFD700;">🏆 排名 #1</span>
+            </div>
+            <div class="mock-leaderboard">
+              <span class="rank rank-2" style="width:18px;height:18px;font-size:0.55rem;">2</span>
+              <span style="flex:1;font-size:0.6rem;color:#aaa;">猛男健身团</span>
+              <span style="font-size:0.55rem;color:#C0C0C0;">差 320 kcal</span>
+            </div>
+            <div class="mock-leaderboard">
+              <span class="rank rank-3" style="width:18px;height:18px;font-size:0.55rem;">3</span>
+              <span style="flex:1;font-size:0.6rem;color:#aaa;">佛系养生组</span>
+              <span style="font-size:0.55rem;color:#CD7F32;">差 890 kcal</span>
+            </div>
+          </div>
+          <div style="font-size:0.55rem;color:var(--accent);text-align:center;margin-top:4px;">⏰ 剩余 2天 4小时</div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-text">
+      <h3>👥 组队副本：和好友一起挑战BOSS</h3>
+      <p>用户可创建或加入3-5人运动队伍，共同挑战团队运动目标（如总消耗卡路里、总跑步距离）。队伍之间有实时排行榜，完成副本全队获得稀有奖励。</p>
+      <ul class="feature-list">
+        <li>智能匹配：根据运动水平自动匹配实力相近的对手</li>
+        <li>语音房间：运动过程中实时语音聊天，互相鼓励</li>
+        <li>伤害贡献：个人运动量转化为BOSS伤害，可视化展示</li>
+        <li>MVP结算：每场副本评选贡献最大的玩家，给予额外奖励</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Feature 3: Season -->
+  <div class="feature-block">
+    <div class="feature-text">
+      <h3>🏅 赛季排位：从青铜到王者的进阶之路</h3>
+      <p>每月为一个赛季，用户通过完成运动任务积累「段位分」。赛季末根据段位发放限定外观、称号和实物奖励。段位机制借鉴MOBA游戏，提供清晰的进阶路径和降级压力。</p>
+      <ul class="feature-list">
+        <li>九大段位：青铜→白银→黄金→铂金→钻石→大师→宗师→王者</li>
+        <li>晋级赛机制：段位晋升需要完成特定挑战任务</li>
+        <li>赛季限定皮肤：每个赛季推出绝版角色皮肤和装备</li>
+        <li>降级保护：连续未达标会触发降级预警，给48小时补救期</li>
+      </ul>
+    </div>
+    <div class="feature-visual">
+      <div class="mock-phone">
+        <div class="notch"></div>
+        <div class="mock-screen">
+          <div style="font-size:0.6rem;color:#aaa;text-align:center;">🏅 S3赛季 · 烈焰远征</div>
+          <div style="text-align:center;margin:8px 0;">
+            <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#00C9A7,#34D399);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:2rem;">🏅</div>
+            <div style="font-size:0.8rem;font-weight:700;color:#00C9A7;margin-top:4px;">铂金 IV</div>
+            <div class="mock-bar" style="width:72%;background:var(--secondary);margin:4px auto;"></div>
+            <div style="font-size:0.55rem;color:#aaa;">晋升所需：还需 380 段位分</div>
+          </div>
+          <div style="font-size:0.6rem;color:#FFD93D;text-align:center;margin-top:6px;">🎁 赛季奖励预览</div>
+          <div style="display:flex;gap:6px;margin-top:4px;">
+            <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:8px;padding:4px;text-align:center;font-size:0.55rem;color:#aaa;">🦊<br>赛季皮肤</div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:8px;padding:4px;text-align:center;font-size:0.55rem;color:#aaa;">💎<br>限定称号</div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:8px;padding:4px;text-align:center;font-size:0.55rem;color:#aaa;">🎫<br>抽奖券</div>
+          </div>
+          <div style="font-size:0.55rem;color:#666;text-align:center;margin-top:6px;">⏳ 赛季剩余 17天</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== USER JOURNEY ===== -->
+<section id="journey">
+  <h2 class="section-title">用户<span class="gradient-text">成长旅程</span></h2>
+  <p class="section-subtitle">从初次接触到深度沉迷，四个阶段逐步引导用户建立运动习惯</p>
+  <div class="journey-steps">
+    <div class="journey-step">
+      <div class="step-num">1</div>
+      <h4>新手村 · 第一天</h4>
+      <p>创建虚拟角色，完成新手引导任务，选择初始职业（战士/射手/法师），获得第一件装备</p>
+    </div>
+    <div class="journey-step">
+      <div class="step-num">2</div>
+      <h4>冒险启程 · 第1周</h4>
+      <p>完成每日任务积累经验，参与第一次组队副本，加入校园势力，建立初始好友圈</p>
+    </div>
+    <div class="journey-step">
+      <div class="step-num">3</div>
+      <h4>赛季冲刺 · 第1月</h4>
+      <p>冲段位排名，收集赛季限定奖励，解锁天赋树高级节点，形成稳定的运动社交圈</p>
+    </div>
+    <div class="journey-step">
+      <div class="step-num">4</div>
+      <h4>传奇之路 · 长期</h4>
+      <p>挑战传说成就，创建或管理公会，参与全服世界事件，成为社区KOL带动更多人运动</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUCT ARCHITECTURE ===== -->
+<section id="arch">
+  <h2 class="section-title">产品<span class="gradient-text">架构设计</span></h2>
+  <p class="section-subtitle">四层架构清晰分离关注点，支持灵活扩展与迭代</p>
+  <div class="arch-diagram">
+    <div class="arch-label" style="font-weight:700;color:#fff;font-size:0.95rem;">🎨 表现层</div>
+    <div class="arch-row">
+      <div class="arch-node layer-1">角色养成界面</div>
+      <div class="arch-node layer-1">任务面板</div>
+      <div class="arch-node layer-1">排行榜</div>
+      <div class="arch-node layer-1">运动数据看板</div>
+      <div class="arch-node layer-1">社交广场</div>
+    </div>
+    <div class="arch-bridge"></div>
+    <div class="arch-label" style="font-weight:700;color:#fff;font-size:0.95rem;">🧩 业务逻辑层</div>
+    <div class="arch-row">
+      <div class="arch-node layer-2">任务引擎</div>
+      <div class="arch-node layer-2">等级系统</div>
+      <div class="arch-node layer-2">匹配算法</div>
+      <div class="arch-node layer-2">成就系统</div>
+      <div class="arch-node layer-2">赛季管理</div>
+    </div>
+    <div class="arch-bridge"></div>
+    <div class="arch-label" style="font-weight:700;color:#fff;font-size:0.95rem;">🗄️ 数据服务层</div>
+    <div class="arch-row">
+      <div class="arch-node layer-3">用户画像</div>
+      <div class="arch-node layer-3">运动数据采集</div>
+      <div class="arch-node layer-3">实时数据同步</div>
+      <div class="arch-node layer-3">推荐引擎</div>
+    </div>
+    <div class="arch-bridge"></div>
+    <div class="arch-label" style="font-weight:700;color:#fff;font-size:0.95rem;">📱 接入层</div>
+    <div class="arch-row">
+      <div class="arch-node layer-4">iOS App</div>
+      <div class="arch-node layer-4">Android App</div>
+      <div class="arch-node layer-4">微信小程序</div>
+      <div class="arch-node layer-4">健康数据 API</div>
+      <div class="arch-node layer-4">校园系统对接</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KEY METRICS ===== -->
+<section>
+  <h2 class="section-title">产品关键<span class="gradient-text">指标设计</span></h2>
+  <p class="section-subtitle">围绕北极星指标「周活跃运动天数」，构建数据驱动的增长飞轮</p>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-num">WAU</div>
+      <div class="metric-label">北极星指标 · 周活跃运动天数</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">D7</div>
+      <div class="metric-label">7日留存率 · 衡量新手体验</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">D30</div>
+      <div class="metric-label">30日留存率 · 衡量习惯养成</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">S/C</div>
+      <div class="metric-label">社交传播系数 · 衡量病毒增长</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">LTV</div>
+      <div class="metric-label">用户生命周期价值</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p style="font-weight:700;font-size:1.1rem;margin-bottom:8px;">燃动Fit — 让运动成为一场冒险</p>
+  <p>游戏化运动激励工具 · 产品设计方案 © 2026</p>
+</footer>
+
+</body>
+</html>
