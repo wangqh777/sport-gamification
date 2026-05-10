@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0b0b1e; }
+::-webkit-scrollbar-thumb { background: #2d2d5a; border-radius: 3px; }
+
+/* Toast animation */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100px); }
+}
+.toast-enter { animation: slideIn 0.3s ease; }
+.toast-exit { animation: slideOut 0.3s ease; }
+
+/* Achievement unlock glow */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(245,158,11,0.3); }
+  50% { box-shadow: 0 0 20px rgba(245,158,11,0.6), 0 0 40px rgba(245,158,11,0.3); }
+}
+.achievement-glow { animation: glow 1.5s ease-in-out 3; }
+
+/* Level up celebration */
+@keyframes levelUp {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  60% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+.level-up-pop { animation: levelUp 0.6s ease; }

@@ -1,0 +1,15 @@
+{
+  "name": "fitness-rpg",
+  "version": "2.0.0",
+  "description": "燃动Fit - 游戏化运动激励工具（全栈版）",
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "dev:server": "cd server && node index.js",
+    "dev:client": "cd client && npx vite",
+    "build:client": "cd client && npx vite build",
+    "start": "cd server && node index.js",
+    "setup": "npm run install:all && npm run build:client"
+  },
+  "author": "",
+  "license": "MIT"
+}
